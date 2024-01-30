@@ -1,19 +1,22 @@
-#include "pico_explorer.hpp"
-#include "drivers/st7789/st7789.hpp"
-#include "libraries/pico_graphics/pico_graphics.hpp"
+#include <pico/stdlib.h>
 
-using namespace pimoroni;
-
-ST7789 st7789(PicoExplorer::WIDTH, PicoExplorer::HEIGHT, ROTATE_0, false, get_spi_pins(BG_SPI_FRONT));
-PicoGraphics_PenRGB332 graphics(st7789.width, st7789.height, nullptr);
+#include "tt_pins.h"
+#include "tt_setup.h"
 
 int main() {
-    graphics.set_pen(255, 0, 0);
+    //set_sys_clock_khz(48000, true);
+    sleep_ms(1);
 
-    while(true) {
-        graphics.pixel(Point(0, 0));
+    tt_select_design(54);
 
-        // now we've done our drawing let's update the screen
-        st7789.update(&graphics);
+    gpio_put(nRST, 1);
+    gpio_put(IN0, 1);
+    sleep_us(10);
+
+    while (true) {
+        gpio_put(CLK, 1);
+        sleep_ms(100);
+        gpio_put(CLK, 0);
+        sleep_ms(100);
     }
 }

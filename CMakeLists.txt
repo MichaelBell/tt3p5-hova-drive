@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 
 # Change your executable name to something creative!
-set(NAME pico-boilerplate) # <-- Name your project/executable here!
+set(NAME tt3p5-hova-drive) # <-- Name your project/executable here!
 
-include(pimoroni_pico_import.cmake)
 include(pico_sdk_import.cmake)
+include(pimoroni_pico_import.cmake)
 
 # Gooey boilerplate
 project(${NAME} C CXX ASM)
@@ -17,20 +17,18 @@ pico_sdk_init()
 # Add your source files
 add_executable(${NAME}
     main.cpp # <-- Add source files here!
+    tt_setup.c
 )
 
 # Include required libraries
 # This assumes `pimoroni-pico` is stored alongside your project
-include(common/pimoroni_i2c)
-include(common/pimoroni_bus)
-include(libraries/bitmap_fonts/bitmap_fonts)
-include(libraries/hershey_fonts/hershey_fonts)
-include(libraries/pico_explorer/pico_explorer)
+#include(common/pimoroni_i2c)
+#include(common/pimoroni_bus)
 
 # Don't forget to link the libraries you need!
 target_link_libraries(${NAME}
-    pimoroni_i2c
-    pico_explorer # <-- List libraries here!
+    pico_stdlib
+    hardware_gpio
 )
 
 # create map/bin/hex file etc.
