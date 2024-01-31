@@ -1,5 +1,7 @@
 #pragma once
 
+#include "hardware/gpio.h"
+
 enum GPIOMap {
     CLK = 0,
     HK_CSB = 1,
@@ -32,3 +34,13 @@ enum GPIOMap {
     UIO7 = 28,
     RPIO29 = 29,
 };
+
+inline static void tt_set_input_byte(int val) {
+    val = (val << 4) | (val & 0xF);
+    gpio_put_masked((0xF << IN0) | (0xF << IN4), val << IN0);
+}
+
+inline static int tt_get_output_byte() {
+    int gpio = gpio_get_all();
+    return ((gpio >> (OUT4 - 4)) & 0xF0) | ((gpio >> (nCRST_OUT2 - 2)) & 0xC) | ((gpio >> SDI_OUT0) & 0x3);
+}

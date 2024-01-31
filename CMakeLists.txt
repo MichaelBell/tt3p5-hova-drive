@@ -14,11 +14,17 @@ set(CMAKE_CXX_STANDARD 17)
 # Initialize the SDK
 pico_sdk_init()
 
+add_compile_options(-Wall -Werror)
+
 # Add your source files
 add_executable(${NAME}
     main.cpp # <-- Add source files here!
+    hovalaag.cpp
+    hova_util.cpp
     tt_setup.c
 )
+
+pico_generate_pio_header(${NAME} ${CMAKE_CURRENT_LIST_DIR}/hova.pio)
 
 # Include required libraries
 # This assumes `pimoroni-pico` is stored alongside your project
@@ -29,7 +35,10 @@ add_executable(${NAME}
 target_link_libraries(${NAME}
     pico_stdlib
     hardware_gpio
+    hardware_pio
 )
+
+pico_enable_stdio_usb(${NAME} 1)
 
 # create map/bin/hex file etc.
 pico_add_extra_outputs(${NAME})

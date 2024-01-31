@@ -3,7 +3,7 @@
 
 #include "tt_pins.h"
 
-int tt_select_design(int idx)
+void tt_select_design(int idx)
 {
     // Ensure all pins are set to safe defaults.
     gpio_set_dir_all_bits(0);

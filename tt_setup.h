@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-int tt_select_design(int idx);
+void tt_select_design(int idx);
 
 #ifdef __cplusplus
 }
