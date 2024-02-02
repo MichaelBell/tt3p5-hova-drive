@@ -54,10 +54,13 @@ int main() {
         pc = hova.execute_one();
         if (pc >= 3) sleep_ms(500);
     }
+
+    //while (1) __wfe();
     #endif
 
     //sleep_ms(2000);
 
+#if 1
     program_len = sizeof(aoc2020_1_1_prog) / sizeof(aoc2020_1_1_prog[0]);
     hova.copy_program(aoc2020_1_1_prog, program_len);
     printf("Program loaded\n");
@@ -71,6 +74,7 @@ int main() {
         printf("%d ", *it);
     }
     printf("\n");
+#endif
 
     program_len = sizeof(aoc2020_5_2_prog) / sizeof(aoc2020_5_2_prog[0]);
     hova.copy_program(aoc2020_5_2_prog, program_len);

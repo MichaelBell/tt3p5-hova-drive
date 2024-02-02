@@ -14,18 +14,22 @@ discard_loop:
     wait 1 gpio 0
     wait 0 gpio 0
     jmp x--, discard_loop
-
-    nop                    [2]  ; These delays tuned for 133MHz RP2040 clock
+    
+    set x, 1     [2]   ; These delays tuned for 133MHz RP2040 clock
     in  pins, 12
     wait 1 gpio 0
-    wait 0 gpio 0
+    wait 0 gpio 0 [3]
 
-    set x, 1               [3]
-decode_loop:
+    in  null, 4
+    mov y, pins
+    jmp skip
+
+read_loop:    
     mov y, pins
     mov osr, y
     out null, 22
-    in  osr, 4
+    in osr, 4
+skip:
     mov osr, y
     out null, 10
     in  osr, 4
@@ -33,7 +37,15 @@ decode_loop:
     out null, 4
     in  osr, 2
     in  y, 2
-    jmp x--, decode_loop
+
+    jmp x--, read_loop
+
+
+;    wait 0 gpio 0 [4]
+;
+;read_loop:
+;    in  pins, 26 [3]
+;    jmp x--, read_loop
 
 
 % c-sdk {
