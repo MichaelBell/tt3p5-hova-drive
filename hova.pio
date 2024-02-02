@@ -2,7 +2,7 @@
 .side_set 1 opt
     set x, 4            side 1
 instr_loop:
-    out isr, 12  
+    out isr, 12
     in  isr, 4          side 1
     mov pins, isr
     jmp x--, instr_loop side 0
@@ -18,9 +18,9 @@ discard_loop:
     
     set x, 0     [2]   ; These delays tuned for 133MHz RP2040 clock
     in  pins, 12
-    wait 1 gpio 0
-    wait 0 gpio 0 [1]
-    pull
+    ;wait 1 gpio 0
+    ;wait 0 gpio 0 [1]
+    pull  [4]
     mov x, osr
 
     in  null, 4
