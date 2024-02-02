@@ -62,17 +62,22 @@ void Hovalaag::run_until_out1_len(size_t expected_len)
         }
         else if (stat & 2) {
             in2.pop_front();
-            const int in2_val = in2.empty() ? 0 : in2.front();
+            in2_empty = in2.empty();
+            const int in2_val = in2_empty ? 0 : in2.front();
             in_val = (in_val & 0xFFF) | (in2_val << 12);
         }
 
         pio_sm_put(pio, sm_out, in_val);
+        pio_sm_put(pio, sm_in, (stat & 0x30) ? 0 : 1);
+        
 
         pc = pio_sm_get_blocking(pio, sm_in);
         //printf("PC: %02x\n", pc);
         
-        int out = pio_sm_get_blocking(pio, sm_in);
         if (stat & 0x30) {
+            int out = pio_sm_get_blocking(pio, sm_in);
+            //pio_sm_put(pio, sm_in, 0);
+            
             //out = (out & 0x3) | ((out >> 2) & 0xC) | ((out >> 6) & 0xF0) | ((out >> 14) & 0xF00);
             if (out > 2047) out -= 4096;
             //printf("OUT: %d\n", out);
@@ -80,13 +85,13 @@ void Hovalaag::run_until_out1_len(size_t expected_len)
             if (stat & 0x10) out1.push_back(out);
             else if (stat & 0x20) {
                 out2->push_back(out);
-                if (in2_empty) {
-                    in2_empty = in2.empty();
-                    const int in2_val = in2.empty() ? 0 : in2.front();
-                    in_val = (in_val & 0xFFF) | (in2_val << 12);
+                if (in2_empty && !in2.empty()) {
+                    in2_empty = false;
+                    in_val = (in_val & 0xFFF) | (in2.front() << 12);
                 }
             }
         }
+
         ++executed;       
     }
 #endif
@@ -100,6 +105,7 @@ void Hovalaag::run_instr(uint32_t instr)
     int in2_val = in2.empty() ? 0 : in2.front();
 
     const int stat = pio_sm_get_blocking(pio, sm_in);
+    pio_sm_put(pio, sm_in, (stat & 0x30) ? 0 : 1);
     //printf("Stat: %02x\n", stat & 0x33);
 
     if (stat & 1) {
@@ -116,8 +122,8 @@ void Hovalaag::run_instr(uint32_t instr)
     pc = pio_sm_get_blocking(pio, sm_in);
     //printf("PC: %02x\n", pc);
     
-    int out = pio_sm_get_blocking(pio, sm_in);
     if (stat & 0x30) {
+        int out = pio_sm_get_blocking(pio, sm_in);
         //out = (out & 0x3) | ((out >> 2) & 0xC) | ((out >> 6) & 0xF0) | ((out >> 14) & 0xF00);
         if (out > 2047) out -= 4096;
         //printf("OUT: %d\n", out);
